@@ -7,6 +7,7 @@ int main()
 {
 	BigInt a("123456789"), b("987654321");
 
+
 	cout << "a = " << a << endl;
 	cout << "b = " << b << endl;
 	cout << "mul = " << a*b << endl << endl;
