@@ -47,10 +47,10 @@ std::ostream& operator<<(std::ostream& os, const BigInt& n)
 	return os;
 }
 
-BigInt::operator bool() const
-{
-	return (val.front());
-}
+//BigInt::operator bool() const
+//{
+//	return (val.front());
+//}
 
 bool BigInt::operator==(const BigInt &other) const
 {
@@ -220,4 +220,33 @@ BigInt BigInt::operator%(const BigInt &other) const //only for [0 or positive]/p
 		while (!(other>tmp)) tmp = tmp - other;
 	} while (!a.val.empty());
 	return tmp;
+}
+
+BigInt BigInt::karatsuba(const BigInt &other) const
+{
+	if (!((*this) && other)) return BigInt(0);
+	if (val.size() == 1 && other.val.size() == 1) return BigInt(val.front()*other.val.front());
+	int s1 = val.size(), s2 = other.val.size(), s = (s1>s2 ? s1 : s2);
+	s = s - s / 2 + 1;
+	BigInt a, b, c, d;
+	a.val.clear(); b.val.clear(); c.val.clear(); d.val.clear();
+
+	for (int i = 1; i<s && i <= s1; ++i) b.val.push_front(val[s1 - i]);
+	if (b.val.empty()) b.val.push_back(0);
+	else while (b.val.size()>1 && b.val.front() == 0) b.val.pop_front();
+	for (int i = s; i <= s1; ++i) a.val.push_front(val[s1 - i]);
+	if (a.val.empty()) a.val.push_back(0);
+	else while (a.val.size()>1 && a.val.front() == 0) a.val.pop_front();
+	for (int i = 1; i<s && i <= s2; ++i) d.val.push_front(other.val[s2 - i]);
+	if (d.val.empty()) d.val.push_back(0);
+	else while (d.val.size()>1 && d.val.front() == 0) d.val.pop_front();
+	for (int i = s; i <= s2; ++i) c.val.push_front(other.val[s2 - i]);
+	if (c.val.empty()) c.val.push_back(0);
+	else while (c.val.size()>1 && c.val.front() == 0) c.val.pop_front();
+
+	BigInt m1 = a.karatsuba(c), m2 = b.karatsuba(d), m3 = (a + b).karatsuba(c + d);
+	m3 = ((m3 - m1) - m2);
+	if (m1) for (int i = 0; i<2 * (s - 1); ++i) m1.val.push_back(0);
+	if (m3) for (int i = 0; i<s - 1; ++i) m3.val.push_back(0);
+	return ((m1 + m3) + m2);
 }

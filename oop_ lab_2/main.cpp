@@ -12,7 +12,7 @@ int main()
 	cout << "b = " << b << endl;
 	cout << "mul = " << a*b << endl << endl;
 	
-	BigInt x("21108"), y("736");
+	BigInt x("2110821108211082110821108"), y("736");
 
 	cout << "x = " << x << endl;
 	cout << "y = " << y << endl;
